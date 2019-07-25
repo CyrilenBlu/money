@@ -1,5 +1,8 @@
 package blu.money.commands;
 
+import lombok.Data;
+
+@Data
 public class DebitMoneyCommand extends _BaseCommand<String> {
 
     private final String accountHolder;

@@ -1,9 +1,9 @@
-package blu.money.commands;
+package blu.money.events;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-public class CreateAccountCommand extends _BaseCommand<String> {
+@Getter
+public class CreateAccountEvent extends _BaseEvent<String> {
 
     private final String accountHolder;
 
@@ -11,7 +11,7 @@ public class CreateAccountCommand extends _BaseCommand<String> {
 
     private final String currency;
 
-    public CreateAccountCommand(String id, String accountHolder, double accountBalance, String currency) {
+    public CreateAccountEvent(String id, String accountHolder, double accountBalance, String currency) {
         super(id);
         this.accountHolder = accountHolder;
         this.accountBalance = accountBalance;

@@ -1,9 +1,10 @@
-package blu.money.commands;
+package blu.money.events;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-public class CreditMoneyCommand extends _BaseCommand<String> {
+@Getter
+public class MoneyCreditedEvent extends _BaseEvent<String> {
+    //no u
 
     private final String accountHolder;
 
@@ -11,7 +12,7 @@ public class CreditMoneyCommand extends _BaseCommand<String> {
 
     private final String currency;
 
-    public CreditMoneyCommand(String id, String accountHolder, double creditAmount, String currency) {
+    public MoneyCreditedEvent(String id, String accountHolder, double creditAmount, String currency) {
         super(id);
         this.accountHolder = accountHolder;
         this.creditAmount = creditAmount;

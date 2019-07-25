@@ -1,8 +1,9 @@
 package blu.money.commands;
 
+import lombok.Getter;
 import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
-
+@Getter
 public class _BaseCommand<T> {
 
     @TargetAggregateIdentifier
