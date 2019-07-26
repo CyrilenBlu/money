@@ -1,9 +1,6 @@
 package blu.money.aggregates;
 
-import blu.money.commands.ChangeAccountHolderCommand;
-import blu.money.commands.CreateAccountCommand;
-import blu.money.commands.CreditMoneyCommand;
-import blu.money.commands.DebitMoneyCommand;
+import blu.money.commands.*;
 import blu.money.enums.Status;
 import blu.money.events.*;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +33,8 @@ public class AccountAggregate {
         AggregateLifecycle.apply(new CreateAccountEvent(command.getId(),
                 command.getAccountHolder(),
                 command.getAccountBalance(),
-                command.getCurrency()));
+                command.getCurrency(),
+                command.getStatus()));
     }
 
     @EventSourcingHandler
@@ -48,6 +46,11 @@ public class AccountAggregate {
         this.status = String.valueOf(Status.CREATED);
 
 //        AggregateLifecycle.apply(new AccountActivatedEvent(this.id, Status.ACTIVATED));
+    }
+
+    @CommandHandler
+    protected void on(ActivateAccountCommand command) {
+        AggregateLifecycle.apply(new AccountActivatedEvent(command.getId(), Status.ACTIVATED));
     }
 
     @EventSourcingHandler
