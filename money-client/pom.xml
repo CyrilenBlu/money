@@ -13,10 +13,12 @@
     <version>0.1</version>
     <name>money-client</name>
     <description>SpringBoot Project with Axon and Eureka. [CLIENT]</description>
+    <packaging>war</packaging>
 
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+        <dockerfile.version>1.4.10</dockerfile.version>
     </properties>
 
     <dependencies>
@@ -76,6 +78,28 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile.version}</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repository>cyrilenblu/money-client</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <WAR_FILE>target/${project.build.finalName}.war</WAR_FILE>
+                    </buildArgs>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
