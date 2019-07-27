@@ -9,5 +9,6 @@ public class Account {
     private final String id;
     private final String accountHolder;
     private double accountBalance;
+    private String currency;
     private String status;
 }

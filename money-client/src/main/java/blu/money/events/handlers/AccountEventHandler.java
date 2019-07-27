@@ -8,9 +8,12 @@ import blu.money.events.MoneyDebitedEvent;
 import blu.money.model.Account;
 import blu.money.queries.FindAccountByIdQuery;
 import blu.money.queries.FindAllAccountsQuery;
+import blu.money.repositories.AccountRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,14 +23,33 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class AccountEventHandler {
+public class AccountEventHandler implements ApplicationListener<ContextRefreshedEvent> {
     private final Map<String, Account> accounts = new HashMap<>();
     private Account queryAccount = null;
+    private final AccountRepository accountRepository;
+
+    public AccountEventHandler(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        accountRepository.findAll()
+                .forEach(account -> accounts.put(account.getId(), new Account(account.getId(),
+                        account.getAccountHolder(),
+                        account.getAccountBalance(),
+                        account.getCurrency(),
+                        account.getStatus())));
+    }
 
     @EventHandler
     public void on(CreateAccountEvent event) {
         String userId = event.getId();
-        accounts.put(userId, new Account(userId, event.getAccountHolder(), event.getAccountBalance(), event.getStatus()));
+        accounts.put(userId, new Account(userId,
+                event.getAccountHolder(),
+                event.getAccountBalance(),
+                event.getCurrency(),
+                event.getStatus()));
     }
 
     @EventHandler
@@ -63,7 +85,11 @@ public class AccountEventHandler {
     public Account handle(FindAccountByIdQuery query) {
         accounts.forEach((s, account) -> {
             if (account.getId().equals(query.getId())) {
-                queryAccount = new Account(account.getId(), account.getAccountHolder(), account.getAccountBalance(), account.getStatus());
+                queryAccount = new Account(account.getId(),
+                        account.getAccountHolder(),
+                        account.getAccountBalance(),
+                        account.getCurrency(),
+                        account.getStatus());
             }
         });
         if (queryAccount == null) {
